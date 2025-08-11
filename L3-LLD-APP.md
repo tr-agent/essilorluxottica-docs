@@ -7,30 +7,32 @@ Essilor-Luxottica • PromoPartner • Mobile Component
 #### 1.1 Position in Overall Architecture  
 The APP is the only end-user native client. It consumes the Backend REST API and, when instructed by the API, uploads or downloads files directly from Azure Blob via Shared-Access-Signature (SAS) URLs. All other integrations are transparently handled by the Backend.
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Architecture Overview**
 
-package "Mobile Device" {
-    [Flutter APP\niOS • Android] as APP
-}
-
-[BCKND /v1 REST] as API
-[Azure Blob Storage] as BLOB
-[Azure PostgreSQL] as PG
-[Azure Queue] as QUEUE
-[MSG91 SMS/E-mail] as MSG91
-
-APP -[HTTPS/JSON]-> API
-APP -[HTTPS (SAS)]-> BLOB
-API -[TLS]-> PG
-API -[enqueue OTP]-> QUEUE
-QUEUE --> API
-API --> MSG91
-@enduml
+```
+Mobile Device
+    ┌─────────────────────────────────┐
+    │        Flutter APP              │
+    │      iOS • Android              │
+    └─────────────────────────────────┘
+                │
+                ├─ HTTPS/JSON ──→ BCKND /v1 REST
+                ├─ HTTPS (SAS) ──→ Azure Blob Storage
+                │
+                ┌─────────────────────────────────┐
+                │           Backend               │
+                │  ┌─────────────────────────────┐│
+                │  │    Azure PostgreSQL         ││
+                │  └─────────────────────────────┘│
+                │  ┌─────────────────────────────┐│
+                │  │    Azure Queue              ││
+                │  └─────────────────────────────┘│
+                │  ┌─────────────────────────────┐│
+                │  │    MSG91 SMS/E-mail        ││
+                │  └─────────────────────────────┘│
+                └─────────────────────────────────┘
+```
 ```
 
 #### 1.2 External Interaction Points  
@@ -45,78 +47,89 @@ API --> MSG91
 #### 2.1 Architectural Overview  
 The APP adopts a thin-client, **online-only** architecture optimised for ≤1 000 concurrent sessions and cold-start ≤3 s. When network connectivity is lost, the UI displays a blocking "Offline" banner and disables all write actions until the network is restored (L3-KD-APP C#1).
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Architecture Class Diagram**
 
-class Presentation {
-    + Widgets
-    + Theming
-}
-
-class State {
-    + Cubit<State>
-    + Bloc<Event,State>
-}
-
-class Services {
-    + DioClient
-    + AuthService
-    + ProductService
-    + TransactionService
-}
-
-class SecureStorage {
-    + flutter_secure_storage
-}
-
-Presentation --> State
-State --> Services
-Services --> DioClient
-DioClient --> SecureStorage
-@enduml
+```
+┌─────────────────────────────────┐
+│         Presentation            │
+├─────────────────────────────────┤
+│ + Widgets                      │
+│ + Theming                      │
+└─────────────────┬───────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────┐
+│            State                │
+├─────────────────────────────────┤
+│ + Cubit<State>                 │
+│ + Bloc<Event,State>            │
+└─────────────────┬───────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────┐
+│           Services              │
+├─────────────────────────────────┤
+│ + DioClient                    │
+│ + AuthService                  │
+│ + ProductService               │
+│ + TransactionService           │
+└─────────────────┬───────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────┐
+│        SecureStorage            │
+├─────────────────────────────────┤
+│ + flutter_secure_storage       │
+└─────────────────────────────────┘
+```
 ```
 
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Services Class Diagram**
 
-class AuthService {
-    - DioClient client
-    - SecureStorage storage
-    + requestOTP(phone: String, email: String?)
-    + verifyOTP(code: String)
-    + refreshToken()
-    + logout()
-}
+```
+┌─────────────────────────────────┐
+│         AuthService             │
+├─────────────────────────────────┤
+│ - DioClient client              │
+│ - SecureStorage storage         │
+├─────────────────────────────────┤
+│ + requestOTP(phone, email?)    │
+│ + verifyOTP(code: String)      │
+│ + refreshToken()                │
+│ + logout()                      │
+└─────────────────┬───────────────┘
+                  │
+                  ├─→ DioClient
+                  └─→ SecureStorage
 
-class TransactionService {
-    - DioClient client
-    - String requestUuid
-    + evaluatePromotions(cart: Cart, storeId: String)
-    + createTransaction(cart: Cart, promotionId: String, token: String)
-    + listTransactions(storeId: String, nextToken: String?)
-    + updateReconciliation(txId: String, invoice: String, pid: String)
-}
+┌─────────────────────────────────┐
+│      TransactionService         │
+├─────────────────────────────────┤
+│ - DioClient client              │
+│ - String requestUuid            │
+├─────────────────────────────────┤
+│ + evaluatePromotions(cart, id)  │
+│ + createTransaction(...)        │
+│ + listTransactions(...)         │
+│ + updateReconciliation(...)     │
+└─────────────────┬───────────────┘
+                  │
+                  └─→ DioClient
 
-class ProductService {
-    - DioClient client
-    + searchProducts(type: String, query: String?, nextToken: String?)
-    + getProductDetails(sku: String)
-}
-
-AuthService --> DioClient
-AuthService --> SecureStorage
-TransactionService --> DioClient
-ProductService --> DioClient
-@enduml
+┌─────────────────────────────────┐
+│         ProductService          │
+├─────────────────────────────────┤
+│ - DioClient client              │
+├─────────────────────────────────┤
+│ + searchProducts(type, query)   │
+│ + getProductDetails(sku)        │
+└─────────────────┬───────────────┘
+                  │
+                  └─→ DioClient
+```
 ```
 
 
@@ -144,33 +157,59 @@ Layer responsibilities
 
 Bottom navigation with 5 root routes – **Home**, **New Sale**, **History**, **Reconcile**, **Profile**. The Home tab includes an internal sub-tab or toggle to switch between the main feed view and the Offers Tab filter UI as specified in L1-SI §2.2. Inside each, stack navigation is used for multi-step flows.
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Navigation State Diagram**
 
-[*] --> Splash
-Splash --> Login : not authenticated
-Splash --> Home : has JWT
-
-state "Tab Bar" {
-    Home --> Transactions
-    Transactions --> History
-    History --> Reconcile
-    Reconcile --> Profile
-    Profile --> Home
-}
-
-Login --> Home : OTP verified
-Home --> NewSale
-NewSale --> ProductSelect
-ProductSelect --> OfferSelect
-OfferSelect --> CustomerDetails
-CustomerDetails --> CustomerVerify
-CustomerVerify --> Success
-@enduml
+```
+                    [*]
+                     │
+                     ▼
+                   Splash
+                     │
+            ┌────────┴────────┐
+            │                 │
+      not authenticated   has JWT
+            │                 │
+            ▼                 ▼
+          Login             Home
+            │                 │
+            │ OTP verified    │
+            └─────┬───────────┘
+                  │
+                  ▼
+                 Home
+                  │
+                  ▼
+              ┌─────────────────────────────────┐
+              │           Tab Bar               │
+              │  ┌─────┐  ┌─────┐  ┌─────┐    │
+              │  │Home │◄─│Profile│◄─│Rec. │    │
+              │  └──┬──┘  └─────┘  └──┬──┘    │
+              │     │                 │        │
+              │     ▼                 │        │
+              │  ┌─────┐  ┌─────┐    │        │
+              │  │Tx.  │─►│Hist.│───►┘        │
+              │  └─────┘  └─────┘             │
+              └─────────────────────────────────┘
+                  │
+                  ▼
+                NewSale
+                  │
+                  ▼
+             ProductSelect
+                  │
+                  ▼
+              OfferSelect
+                  │
+                  ▼
+             CustomerDetails
+                  │
+                  ▼
+             CustomerVerify
+                  │
+                  ▼
+                Success
+```
 ```
 
 Comprehensive screen list & primary endpoints
@@ -202,29 +241,34 @@ Comprehensive screen list & primary endpoints
 2. **ErrorMapperInterceptor** – converts HTTP errors to typed `ApiException`.
 3. **SASRetryInterceptor** – On `403 Signature expired` for Blob operations, requests fresh SAS URL and retries once (L3-KD-APP C#9).
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Token Refresh Sequence Diagram**
 
-actor UI
-participant "Cubit/Bloc" as C
-participant "DioClient" as Dio
-participant API
-
-UI -> C : action()
-C -> Dio : /v1/resource
-Dio -> API : GET (jwt)
-API --> Dio : 401
-Dio -> SecureStore : read refreshToken
-Dio -> API : POST /auth/refresh
-API --> Dio : 200 new jwt/refresh
-Dio --> API : replay GET
-API --> Dio : 200 data
-Dio --> C : data
-@enduml
+```
+UI          Cubit/Bloc    DioClient    API         SecureStore
+│               │            │          │              │
+│  action()     │            │          │              │
+│ ─────────────►│            │          │              │
+│               │ /v1/resource│          │              │
+│               │ ──────────►│          │              │
+│               │            │ GET (jwt) │              │
+│               │            │ ────────►│              │
+│               │            │          401            │
+│               │            │ ◄────────│              │
+│               │            │ read refreshToken       │
+│               │            │ ───────────────────────►│
+│               │            │ POST /auth/refresh      │
+│               │            │ ────────►│              │
+│               │            │ 200 new jwt/refresh     │
+│               │            │ ◄────────│              │
+│               │            │ replay GET              │
+│               │            │ ────────►│              │
+│               │            │ 200 data                │
+│               │            │ ◄────────│              │
+│               │            │ data                    │
+│               │ ◄─────────│          │              │
+│               │            │          │              │
+```
 ```
 
 Token storage keys  
@@ -241,29 +285,47 @@ All GET list calls accept `/v1/*?limit=N&nextToken=…`. `ListResponse<T>` model
 
 The cart maintains transaction idempotency using a `request_uuid` stored in RAM throughout the session. On the first `/v1/transactions` call, the Backend returns `201 Created` with transaction details. The APP retains this UUID and re-uses it on every retry until a terminal response is received (L3-KD-APP C#4).
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Cart Evaluation Flow**
 
-start
-:Select SKU;
-:Build cart array;
-:call /promotions/evaluate;
-
-if (eligible == 0) then (yes)
-    :Disable Checkout;
-else (no)
-    :Show discount + CTA;
-    :Generate request_uuid;
-    :POST /transactions with UUID;
-    :Navigate to Tx Detail;
-endif
-
-stop
-@enduml
+```
+                    Start
+                      │
+                      ▼
+                  Select SKU
+                      │
+                      ▼
+                Build cart array
+                      │
+                      ▼
+            call /promotions/evaluate
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ eligible == 0 ? │
+              └─────────┬───────┘
+                        │
+            ┌───────────┴───────────┐
+            │                       │
+          Yes                     No
+            │                       │
+            ▼                       ▼
+      Disable Checkout      Show discount + CTA
+            │                       │
+            │                       ▼
+            │                 Generate request_uuid
+            │                       │
+            │                       ▼
+            │              POST /transactions with UUID
+            │                       │
+            │                       ▼
+            │                Navigate to Tx Detail
+            │                       │
+            └───────────────────────┘
+                        │
+                        ▼
+                      Stop
+```
 ```
 
 #### 2.7 Multi-Step Sale Flow Implementation
@@ -273,20 +335,38 @@ The New Sale feature implements a 5-step wizard pattern managed by `SaleBloc` wi
 - `SaleState` - Base state containing cart items, selected promotion, customer details, and current step
 - `ProductSelectionState`, `OfferSelectionState`, `CustomerDetailsState`, `VerificationState`, `SuccessState` - Step-specific states
 - `SaleEvent` - Base event class with subclasses: `ProductsSelected`, `OfferSelected`, `CustomerEntered`, `OTPVerified`, `TransactionCompleted`
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Sale Flow State Diagram**
 
-[*] --> ProductSelection
-ProductSelection --> OfferSelection : Products selected
-OfferSelection --> CustomerDetails : Offer selected
-CustomerDetails --> CustomerVerification : Details entered
-CustomerVerification --> TransactionSuccess : Code verified
-TransactionSuccess --> [*]
-@enduml
+```
+                    [*]
+                     │
+                     ▼
+              ProductSelection
+                     │
+              Products selected
+                     │
+                     ▼
+               OfferSelection
+                     │
+               Offer selected
+                     │
+                     ▼
+              CustomerDetails
+                     │
+              Details entered
+                     │
+                     ▼
+            CustomerVerification
+                     │
+               Code verified
+                     │
+                     ▼
+            TransactionSuccess
+                     │
+                     ▼
+                    [*]
+```
 ```
 
 Each step maintains local state in the Bloc while progressing through the flow:
@@ -320,22 +400,32 @@ Each step maintains local state in the Bloc while progressing through the flow:
 #### 3.1 Global Layout  
 The app follows a consistent layout structure across all screens with common UI elements to ensure seamless navigation and brand consistency. Maximum viewport width is constrained to 430px for optimal mobile viewing.
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Layout Structure**
 
-package "Layout Structure" {
-    [AppBar - Sticky Header] as header
-    [BottomNav – 5 tabs] as nav
-    [RouterOutlet - Scrollable Content] as body
-}
-
-header --> body
-body --> nav
-@enduml
+```
+┌─────────────────────────────────────────────────┐
+│              AppBar - Sticky Header             │
+└─────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────┐
+│           RouterOutlet - Scrollable Content     │
+│                                                 │
+│  ┌─────────────────────────────────────────────┐ │
+│  │                                           │ │
+│  │              Screen Content                │ │
+│  │                                           │ │
+│  └─────────────────────────────────────────────┘ │
+│                                                 │
+└─────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────┐
+│              BottomNav – 5 tabs                │
+│  [Home] [New Sale] [History] [Reconcile] [Profile] │
+└─────────────────────────────────────────────────┘
+```
 ```
 
 Theme: 
@@ -443,67 +533,116 @@ Theme:
 
 #### 3.4 User Interaction Flows
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**User Login & Sale Flow**
 
-start
-:Login Screen;
-:Phone/Email Entry;
-:Request SMS/Email OTP;
-:Enter 6-Digit OTP;
-
-if (Verify) then (yes)
-    :Home Screen;
-    :Tap New Sale;
-    :Select Products via Modal;
-    :View Available Offers;
-    :Select Best Offer;
-    :Enter Customer Details;
-    :Customer Verification Choice;
-    
-    if (SMS/Email) then (SMS)
-        :Enter Customer OTP;
-    else (Email)
-        :Enter Customer OTP;
-    endif
-    
-    :Transaction Success;
-    :View in History;
-else (no)
-    :Return to Login;
-endif
-
-stop
-@enduml
+```
+                    Start
+                      │
+                      ▼
+                  Login Screen
+                      │
+                      ▼
+                Phone/Email Entry
+                      │
+                      ▼
+            Request SMS/Email OTP
+                      │
+                      ▼
+                Enter 6-Digit OTP
+                      │
+                      ▼
+              ┌─────────────────┐
+              │     Verify?     │
+              └─────────┬───────┘
+                        │
+            ┌───────────┴───────────┐
+            │                       │
+          Yes                     No
+            │                       │
+            ▼                       ▼
+          Home Screen        Return to Login
+            │
+            ▼
+          Tap New Sale
+            │
+            ▼
+        Select Products via Modal
+            │
+            ▼
+        View Available Offers
+            │
+            ▼
+          Select Best Offer
+            │
+            ▼
+        Enter Customer Details
+            │
+            ▼
+      Customer Verification Choice
+            │
+            ▼
+        ┌─────────────────────────┐
+        │      SMS/Email?         │
+        └─────────┬───────────────┘
+                  │
+        ┌─────────┴───────────────┐
+        │                         │
+      SMS                     Email
+        │                         │
+        ▼                         ▼
+    Enter Customer OTP      Enter Customer OTP
+        │                         │
+        └─────────┬───────────────┘
+                  │
+                  ▼
+            Transaction Success
+                  │
+                  ▼
+              View in History
+                  │
+                  ▼
+                  Stop
+```
 ```
 
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Reconciliation Flow**
 
-start
-:Reconciliation Tab;
-:View Pending Transactions;
-:Select Transaction;
-:Enter Invoice/PID;
-
-if (Validate Uniqueness) then (Valid)
-    :PATCH /v1/transactions/{id};
-    :Update Status to UNDER_REVIEW;
-else (Duplicate)
-    :Show Error;
-endif
-
-stop
-@enduml
+```
+                    Start
+                      │
+                      ▼
+                Reconciliation Tab
+                      │
+                      ▼
+            View Pending Transactions
+                      │
+                      ▼
+                Select Transaction
+                      │
+                      ▼
+                Enter Invoice/PID
+                      │
+                      ▼
+              ┌─────────────────────┐
+              │ Validate Uniqueness │
+              └─────────┬───────────┘
+                        │
+            ┌───────────┴───────────┐
+            │                       │
+          Valid                 Duplicate
+            │                       │
+            ▼                       ▼
+    PATCH /v1/transactions/{id}  Show Error
+            │
+            ▼
+    Update Status to UNDER_REVIEW
+            │
+            ▼
+            Stop
+```
 ```
 
 
@@ -655,25 +794,29 @@ Accepts entity type and blob URL. Triggers backend processing of uploaded CSV fi
 | OTP Storage | OTP codes stored as plaintext without encryption in PostgreSQL (accepted risk), protected only by database-level encryption |
 | JWT Signing | JWT signed with RS256 algorithm |
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Security Authentication Flow**
 
-actor User
-participant APP
-participant API
-
-note over APP, API : TLS 1.2
-
-User -> APP : enters phone/email
-APP -> API : /auth/otp/request
-API -> API : Store plaintext OTP in PostgreSQL
-User -> API : /auth/otp/verify
-API --> APP : JWT (RS256) + refresh
-@enduml
+```
+User          APP           API
+ │            │             │
+ │ enters     │             │
+ │ phone/email│             │
+ │ ──────────►│             │
+ │            │ /auth/otp/request
+ │            │ ──────────►│
+ │            │             │ Store plaintext OTP
+ │            │             │ in PostgreSQL
+ │            │             │
+ │            │             │
+ │            │             │
+ │ /auth/otp/verify        │
+ │ ───────────────────────►│
+ │            │             │
+ │            │ JWT (RS256) + refresh
+ │            │ ◄──────────│
+ │            │             │
+```
 ```
 
 ---
@@ -689,20 +832,27 @@ Error handling follows a fail-fast strategy with clear user messaging. The backe
 * OTP Lockout: Display "Too many attempts. Please try again after 15 minutes" when `ACCOUNT_LOCKED` error received.
 * Network errors: Show blocking overlay with "No Internet Connection" message and retry button
 
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor transparent
-skinparam defaultFontName Arial
-skinparam defaultFontSize 10
+```
+**Error Handling Flow**
 
-start
-:APIError;
-:ErrorMapper;
-:Bloc/Cubit;
-:UIToast;
-stop
-@enduml
+```
+                    Start
+                      │
+                      ▼
+                    APIError
+                      │
+                      ▼
+                  ErrorMapper
+                      │
+                      ▼
+                  Bloc/Cubit
+                      │
+                      ▼
+                    UIToast
+                      │
+                      ▼
+                     Stop
+```
 ```
 
 **Error Message Mapping**
