@@ -273,8 +273,8 @@ UI          Cubit/Bloc    DioClient    API         SecureStore
 
 Token storage keys  
 
-| Key | Store | Lifetime |
-|-----|-------|----------|
+| Key |    Store    | Lifetime |
+|-----|-------------|----------|
 | `refreshToken` | Secure Storage | 12 h |
 | `jwt` | Secure Storage | ≤60 min |
 
