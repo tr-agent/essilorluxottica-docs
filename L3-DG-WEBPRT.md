@@ -1,8 +1,5 @@
 ## L3-DG-WEBPRT: Deployment Guide for WEBPRT
 
-> PromoPartner – Web Portal Component  
-> Version 1.0 • Status: FINAL
-
 ---
 
 ### 1. Purpose
