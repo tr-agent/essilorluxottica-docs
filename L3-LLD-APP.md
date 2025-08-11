@@ -245,29 +245,29 @@ Comprehensive screen list & primary endpoints
 **Token Refresh Sequence Diagram**
 
 ```
-UI          Cubit/Bloc    DioClient    API         SecureStore
-│               │            │          │              │
-│  action()     │            │          │              │
-│ ─────────────►│            │          │              │
-│               │ /v1/resource│          │              │
-│               │ ──────────►│          │              │
-│               │            │ GET (jwt) │              │
-│               │            │ ────────►│              │
-│               │            │          401            │
-│               │            │ ◄────────│              │
-│               │            │ read refreshToken       │
-│               │            │ ───────────────────────►│
-│               │            │ POST /auth/refresh      │
-│               │            │ ────────►│              │
-│               │            │ 200 new jwt/refresh     │
-│               │            │ ◄────────│              │
-│               │            │ replay GET              │
-│               │            │ ────────►│              │
-│               │            │ 200 data                │
-│               │            │ ◄────────│              │
-│               │            │ data                    │
-│               │ ◄─────────│          │              │
-│               │            │          │              │
+                    UI          Cubit/Bloc    DioClient    API         SecureStore
+                     │               │            │          │              │
+                     │  action()     │            │          │              │
+                     │ ─────────────►│            │          │              │
+                     │               │ /v1/resource│          │              │
+                     │               │ ──────────►│          │              │
+                     │               │            │ GET (jwt) │              │
+                     │               │            │ ────────►│              │
+                     │               │            │          401            │
+                     │               │            │ ◄────────│              │
+                     │               │            │ read refreshToken       │
+                     │               │            │ ───────────────────────►│
+                     │               │            │ POST /auth/refresh      │
+                     │               │            │ ────────►│              │
+                     │               │            │ 200 new jwt/refresh     │
+                     │               │            │ ◄────────│              │
+                     │               │            │ replay GET              │
+                     │               │            │ ────────►│              │
+                     │               │            │ 200 data                │
+                     │               │            │ ◄────────│              │
+                     │               │            │ data                    │
+                     │               │ ◄─────────│          │              │
+                     │               │            │          │              │
 ```
 ```
 
@@ -798,24 +798,24 @@ Accepts entity type and blob URL. Triggers backend processing of uploaded CSV fi
 **Security Authentication Flow**
 
 ```
-User          APP           API
- │            │             │
- │ enters     │             │
- │ phone/email│             │
- │ ──────────►│             │
- │            │ /auth/otp/request
- │            │ ──────────►│
- │            │             │ Store plaintext OTP
- │            │             │ in PostgreSQL
- │            │             │
- │            │             │
- │            │             │
- │ /auth/otp/verify        │
- │ ───────────────────────►│
- │            │             │
- │            │ JWT (RS256) + refresh
- │            │ ◄──────────│
- │            │             │
+                    User          APP           API
+                     │            │             │
+                     │ enters     │             │
+                     │ phone/email│             │
+                     │ ──────────►│             │
+                     │            │ /auth/otp/request
+                     │            │ ──────────►│
+                     │            │             │ Store plaintext OTP
+                     │            │             │ in PostgreSQL
+                     │            │             │
+                     │            │             │
+                     │            │             │
+                     │ /auth/otp/verify        │
+                     │ ───────────────────────►│
+                     │            │             │
+                     │            │ JWT (RS256) + refresh
+                     │            │ ◄──────────│
+                     │            │             │
 ```
 ```
 
