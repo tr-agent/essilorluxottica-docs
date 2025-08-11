@@ -159,7 +159,7 @@ Bulk Upload option
 ### 3.3.2 Add New Lens Form.  
 
 - Lens Fields
-"""
+
 | Field              | Description                   |
 |--------------------|-------------------------------|
 | New Code           | Unique identifier             |
@@ -181,7 +181,6 @@ Bulk Upload option
 | Eye Code           | Eye measurement code          |
 | MANUFACTURE        | Manufacturing details         |
 | SRP 2025           | Suggested retail price        |
-"""
 
 
 
@@ -210,7 +209,6 @@ Bulk Upload option
 
 --Frame fields
 
-"""
 | Column Name             | Description                 |
 |-------------------------|-----------------------------|
 | EAN_New                 | Unique identifier           |
@@ -237,7 +235,6 @@ Bulk Upload option
 | MRP (INR)               |                             |
 | HSN Code                |                             |
 | DMS SKU ID              |                             |
-"""
 
 ### 3.4.3 Bulk Upload Process
 
@@ -254,10 +251,10 @@ Upload CSV file
 
 ### 3.5.1 User List View
 
-Display all system users - Admin, KAM , Store User , parent Store User
-Edit icon for each user
-Add New User button
-Bulk Upload Button  – Name, Registered Phone Number, Role , Status – Active/Deactive , a) Mapped Parent stores Id for KAM User, b) TR Store Id for Store User  c) Comma Seperated TR Store Id for Parent Store user.
+- Display all system users - Admin, KAM , Store User , parent Store User
+- Edit icon for each user
+- Add New User button
+- Bulk Upload Button  – Name, Registered Phone Number, Role , Status – Active/Deactive , a) Mapped Parent stores Id for KAM User, b) TR Store Id for Store User  c) Comma Seperated TR Store Id for Parent Store user.
 Download CSV format Button – Downloads a CSV with upload headers.
 
 ### 3.5.2 Edit User Form
@@ -294,30 +291,28 @@ Edit existing stores
 
 ### 3.6.2 Store Fields
 
-"""
-| Field Name            | Description                                                            | Field Type | Notes                                                                                                                   |
-|-----------------------|------------------------------------------------------------------------|------------|-------------------------------------------------------------------------------------------------------------------------|
-| UniqueId              | Unique Id in our systems for each store                                |            | System generated                                                                                                        |
-| Store Type            | Parent / child store                                                   | ID         | Mandatory To segregate between parent store and child store                                                             |
-| Zone                  | Operational Zone                                                       | Text       | e.g. North, East, South, West                                                                                           |
-| Door Type             | Type of store                                                          | Text       | ECP, EBO, DUD, etc.                                                                                                     |
+| Field Name            | Description                                                            |   Field Type   | Notes                                                                                                                   |
+|-----------------------|------------------------------------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------|
+| UniqueId              | Unique Id in our systems for each store                                |               | System generated                                                                                                        |
+| Store Type            | Parent / child store                                                   | ID            | Mandatory To segregate between parent store and child store                                                             |
+| Zone                  | Operational Zone                                                       | Text          | e.g. North, East, South, West                                                                                           |
+| Door Type             | Type of store                                                          | Text          | ECP, EBO, DUD, etc.                                                                                                     |
 | Luxottica Outlet ID   | Frames Outlet ID (Frames_Outlet_ID / SAP Code from Luxottica)          | Text/ID    |                                                                                                                         |
 | Essilor Outlet ID     | Lens Unique Code (Lens Code from Essilor)                              | Text/ID    |                                                                                                                         |
-| Outlet Name           | Store Name                                                             | Text       | e.g. VINAYAK ASSOCIATES                                                                                                 |
+| Outlet Name           | Store Name                                                             | Text         | e.g. VINAYAK ASSOCIATES                                                                                                 |
 | Store Address         | Full Address with Pincode                                              | Text       |                                                                                                                         |
 | City                  | City                                                                   | Text       |                                                                                                                         |
 | State                 | State                                                                  | Text       |                                                                                                                         |
 | GSTIN Primary         | Primary GST Registration Number                                        | Text (15 char) | Mandatory                                                                                                               |
 | GSTIN Secondary       | Secondary GST Registration Number                                      | Text (15 char) | Can be blank                                                                                                            |
 | PAN                   | PAN Number                                                             | Text (10 char) | Extracted from GSTIN                                                                                                    |
-| Parent Customer Code  | Parent Customer Code                                                   | Text       | Useful for grouping. Mandatory. Same as System generated id for all Parent store type user (Default). For Child store type this is a mandatory field. |
-| Ship To Code          | Ship To ID                                                             | Text/ID    | Key for delivery mapping                                                                                                |
-| Sold To Code          | Sold To ID                                                             | Text/ID    | Key for billing mapping                                                                                                 |
+| Parent Customer Code  | Parent Customer Code                                                   | Text           | Useful for grouping. Mandatory. Same as System generated id for all Parent store type user (Default). For Child store type this is a mandatory field. |
+| Ship To Code          | Ship To ID                                                             | Text/ID        | Key for delivery mapping                                                                                                |
+| Sold To Code          | Sold To ID                                                             | Text/ID        | Key for billing mapping                                                                                                 |
 | Service Type          | Direct / DUD / Others                                                  | Text       |                                                                                                                         |
-| EL360                 | EL360 participation                                                    | Yes/No     | Text                                                                                                                    |
-| EE                    | EE program eligibility                                                 | Yes/No     | Text                                                                                                                    |
-| LIS                   | LIS program eligibility                                                | Yes/No     | Text                                                                                                                    |
-"""
+| EL360                 | EL360 participation                                                    | Yes/No         | Text                                                                                                                    |
+| EE                    | EE program eligibility                                                 | Yes/No         | Text                                                                                                                    |
+| LIS                   | LIS program eligibility                                                | Yes/No         | Text                                                                                                                    |
 
 
 ### 3.6.3 : Add new store - 1. Fill all the mandatory/non mandatory fields  in the new store form and Save.
@@ -332,15 +327,15 @@ View existing store groups
 Create new store groups based on “nested” filtering on fields :
 
 { 
-City
-Pin Code
-State
-Zone
-Door type
-Service type
-EL360
-EE
-LIS
+  City
+  Pin Code
+  State
+  Zone
+  Door type
+  Service type
+  EL360
+  EE
+  LIS
 }
 
 Each group represents a set of stores
@@ -385,14 +380,14 @@ Display all promotions with list including – Id, Promotion Name, Current Promo
 
 ### 3.9.2 Create New Promotion Workflow
 
-####Step 1: Basic Information
+#Step 1: Basic Information
 
 Promotion Title
 Description
 Marketing Banner (PNG/JPG, max 10MB)
 Start Date and End Date selection through calendar widget.
 
-####Step 2: Promotion Type Selection
+#Step 2: Promotion Type Selection
 Fixed Price Offer (Lens/Frame)
 Fixed Percentage Offer
 Joint Promotional Offer (Lens + Frame)
@@ -400,7 +395,7 @@ BOGO
 Value Upgrade Offer
 Free Item Offer
 
-####Step 3: Configuration Rules IF Conditions with Modular Building Blocks
+#Step 3: Configuration Rules IF Conditions with Modular Building Blocks
 
 **Building Blocks**
 - Product Type (Frame/Lens)- dropdown
@@ -426,7 +421,7 @@ Free Item Offer
 - These are Nested OR/AND  OPERATORS AVAILABLE TO APPLY A LOGIC AT MULTIPLE LEVELS
 
 
-#### Step 4: Eligibility Settings
+#Step 4: Eligibility Settings
 
 - Store Group Selection AND APPLY ADDITIONAL RULES
 
@@ -436,7 +431,7 @@ Free Item Offer
 - Minimum purchase amount
 - Spend Amount alert.
 
-####Step 5: Review and Activate
+#Step 5: Review and Activate
 - Review Summary of all settings
 - Configuration rules summary
 - Eligibility criteria
@@ -454,16 +449,14 @@ Based on each promotions conditions and rules and need variable need, the system
 
 ## 3.10 Transaction Management
 
-### 3.10.1
-
-View all promotional transactions
+## 3.10.1 : View all promotional transactions
 
 - Transaction details: ID, Promotion name, Store ID/Name, Date, Promotion value, Invoice ID, PID Number**
 - CSV download with filters: Date, State, City, Pin Code
 - Transaction verification and status updates:  System-wide  status lifecycle “New →Under Review → Verified → Settlement Complete”
 - Default initial status = “New”
 
-###3.10.2 : Bulk Operations
+## 3.10.2 : Bulk Operations
 
 - CSV Upload Process:
 - Download reconciliation template
@@ -570,8 +563,7 @@ Staff Inputs Customer name (Optional), Phone number/ Email – Check eligibility
 System does an Eligibility check – for Offer with: Product Details, and other eligibility criteria for the offer.
 Eligibility check passed –Generate Code Button activates.
 Eligibility check failed – Displays “Sorry this offer is not applicable”.  Generate Code Button Remains Inactive.
-Staff generates code –
-Customer receives both SMS OTP and Email OTP
+Staff generates code – Customer receives both SMS OTP and Email OTP
 Customer provides code to staff
 Staff enters code in app
 
@@ -702,11 +694,11 @@ Can change the selected store from a dropdown of all mapped store.
 
 ## 6.1 Core Functionality
 
-Limited Admin functionality with access control on mapped parent user.
-Login
-Dashboard (same as admin but with access limited to mapped parent stores )
-Transaction management ( (same as admin but with access limited to mapped parent stores.
-User Management for mapped parent store.
+- Limited Admin functionality with access control on mapped parent user.
+- Login
+- Dashboard (same as admin but with access limited to mapped parent stores )
+- Transaction management ( (same as admin but with access limited to mapped parent stores.
+- User Management for mapped parent store.
 
 
 
@@ -714,13 +706,13 @@ User Management for mapped parent store.
 
 ## 7.1 SMS Integration
 
-A) Transaction confirmation messages
-C) OTP 
+1. Transaction confirmation messages
+2. OTP 
 
 ## 7.2 Email Integration
 
 1. System generated emails
-3. OTP 
+2. OTP 
 
 ## 7.3 File Management
 
@@ -728,9 +720,9 @@ C) OTP
 2. Banner image storage
 3. Report generation and download
 
-## 6.4 Data Validation
+## 7.4 Data Validation
 
-Phone number format validation
-Email format validation
-File format verification
-Business rules enforcement
+1. Phone number format validation
+2. Email format validation
+3. File format verification
+4. Business rules enforcement
