@@ -226,19 +226,11 @@ sequenceDiagram
 - For login OTP: System queries user record by phone, retrieves associated email (if exists), and queues identical OTP for both SMS and Email delivery via MSG91. The verification accepts the code regardless of which channel the user received it from.
 - Queue TTL is set to match OTP TTL (10 minutes for login, 5 minutes for customer) ensuring expired codes are never delivered.
 
-### 6.2 Promotion Rule Engine  
-
-Unchanged – see §3 narrative.
-
-### 6.3 Transaction FSM & Idempotency  
-
-Unchanged except KAM is read-only – enforced by middleware role check.
-
-### 6.4 CSV Ingest  
+### 6.2 CSV Ingest  
 
 Worker polls `csv_jobs` table (`status=PENDING`) instead of any queue; wording corrected.
 
-### 6.5 Promotion Rule Engine Grammar Specification
+### 6.3 Promotion Rule Engine Grammar Specification
 
 The promotion engine uses a JSON-based DSL with IF-THEN structure. Rules are compiled to expression trees and cached in memory for performance.
 
