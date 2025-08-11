@@ -1,12 +1,5 @@
 # Statement of Work (SOW)
-## Promotions Management Solution for EssilorLuxottica
 
-**Document Version:** 1.0  
-**Date:** April 29, 2025  
-**Prepared by:** TrueReach AI  
-**Prepared for:** Mr. Anil Dulam, EssilorLuxottica  
-
----
 
 ## 1. PROJECT OVERVIEW
 
@@ -303,27 +296,6 @@ TrueReach AI will develop and deliver a comprehensive Promotions Management Plat
 - Both parties agree to maintain confidentiality of proprietary information
 - Non-disclosure agreements will govern information sharing
 - Security protocols will be maintained throughout the project
-
----
-
-## 11. Project Contacts
-
-### 11.1 TrueReach AI
-- **Project Lead:** Shubham Tulshyan
-- **Technical Team:** AI Workforce of TrueReach AI
-
-### 11.2 EssilorLuxottica
-- **Project Sponsor:** Mr. Anil Dulam
-- **[Additional contacts to be defined]**
-
----
-
-**Document Approval:**
-
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| TrueReach AI Representative | | | |
-| EssilorLuxottica Representative | | | |
 
 ---
 

@@ -135,7 +135,7 @@ This Level‑1 *Screen‑Inventory* enumerates **every** screen, modal and major
 
 ### 5. Out-of-Scope Items
 
-Pixel‑level layouts, colour palettes, component libraries, edge‑case modals, automated test harnesses and accessibility specifications reside in L3‑level design artefacts.
+1. Pixel‑level layouts, colour palettes, component libraries, edge‑case modals, automated test harnesses and accessibility specifications reside in L3‑level design artefacts.
 ---
 
 **End of Document**
