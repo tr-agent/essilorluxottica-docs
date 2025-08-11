@@ -114,12 +114,12 @@ TrueReach AI will develop and deliver a comprehensive Promotions Management Plat
 
 ---
 
-## 3. DELIVERABLES
+## 3. Deliverables
 
 ### 3.1 Software Components
 
 #### 3.1.1 Mobile Applications
-- ** Hybrid Android and iOS  Application**
+  - Hybrid Android and iOS  Application
   - Cross platform  Android and iOS app (source code included)
   - App store and playstore listing and deployment package
   - Installation and configuration documentation
@@ -281,13 +281,13 @@ TrueReach AI will develop and deliver a comprehensive Promotions Management Plat
 
 ---
 
-## 9. PAYMENT TERMS
+## 9. Payment Terms
 
 *[Payment terms to be defined based on separate commercial agreement]*
 
 ---
 
-## 10. TERMS AND CONDITIONS
+## 10. Terms and Conditions
 
 ### 10.1 Change Management
 - Any changes to scope require written approval from both parties
@@ -306,7 +306,7 @@ TrueReach AI will develop and deliver a comprehensive Promotions Management Plat
 
 ---
 
-## 11. PROJECT CONTACTS
+## 11. Project Contacts
 
 ### 11.1 TrueReach AI
 - **Project Lead:** Shubham Tulshyan

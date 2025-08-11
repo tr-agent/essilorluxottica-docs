@@ -18,8 +18,8 @@ Implementation note: When a promotion reaches its End Date the system automatica
 
 ### 2. Core Business Entities  
 
-| Entity | Cardinality | Key Attributes |
-|--------|-------------|----------------|
+| Entity |   Cardinality   | Key Attributes |
+|--------|-----------------|----------------|
 | Promotion | ≤ 20 active | id, type, status (enum: Draft, Active, Scheduled, Paused, Archived), IF/THEN rule set (JSON), start/end |
 | Product (Lens, Frame) | ~100,000 | sku (single canonical identifier mapped from legacy “New Code” & “EAN_New” / “SKU Code”), attributes, price |
 | Store | ≤ 5,000 | ids (Luxottica, Essilor), parent_id, geo attributes |
@@ -38,7 +38,7 @@ Note: During CSV ingest the fields “New Code” (lens) and “EAN_New” / “
 3. API layer exposes REST/JSON endpoints; all queries are routed to the primary.
 
 #### 3.2 Product Flow  
-Mobile App selects SKUs → `/promotions/evaluate` API → Rule Engine computes eligibility & discount → Transaction persisted → Confirmation returned.
+  Mobile App selects SKUs → `/promotions/evaluate` API → Rule Engine computes eligibility & discount → Transaction persisted → Confirmation returned.
 
 #### 3.3 Money / Settlement Flow  
 1. Discount applied at store (PromoPartner Store User app).  
