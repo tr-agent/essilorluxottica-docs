@@ -7,13 +7,14 @@ This Level-3 document specifies all functional capabilities that the PromoPartne
 
 Each requirement is tagged with an internal identifier `APP-FR-xx` and, where applicable, cites the originating high-level provision in L1-FRS (`Implements L1-FRS-§x.y`). The listed HTTP endpoints and verbs are authoritative; any change must first be reflected in L2-LLD-IC.
 
-#### 2.1 Platform & Environment  
+### 2.1 Platform & Environment  
 | ID | Requirement | Trace | Notes |
 |----|-------------|-------|-------|
 | APP-FR-01 | The APP SHALL run on Android 10+ and iOS 15+ phones and tablets, adapting layouts to screens ≥ 7". | L1-FRS-§6.3 | Minimum OS versions aligned with L3-LLD-APP §5 for security. |
 | APP-FR-02 | The APP SHALL operate online only; any network failure surfaces a banner and a **Retry** action. | L1-HLD-§10, KD-APP C#1 | No offline queue or local DB. |
 
-#### 2.2 Authentication & Session Management  
+
+### 2.2 Authentication & Session Management  
 | ID | Requirement | HTTP Endpoint(s) | Trace |
 |----|-------------|------------------|-------|
 | APP-FR-03 | The APP SHALL request a login OTP (both SMS and Email) for Store/Parent users via `POST /v1/auth/otp/request`. | Implements L1-FRS-§2.1.1 | Both channels use MSG91 |
@@ -22,41 +23,47 @@ Each requirement is tagged with an internal identifier `APP-FR-xx` and, where ap
 | APP-FR-06 | The APP SHALL enforce single-device concurrency by including the last issued `refreshToken` only; any 401/403 with `UNAUTHENTICATED` code triggers forced logout. | Clarification #7 |
 | APP-FR-07 | The APP SHALL enforce lockout after 5 failed OTP attempts within 10 minutes, displaying "Account locked for 15 minutes" message when `ACCOUNT_LOCKED` error is received. | L1-FRS-§2.1.1 | Backend enforces the lockout logic |
 
-#### 2.3 Store Context Switching (Parent-Store Users)  
+
+### 2.3 Store Context Switching (Parent-Store Users)  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-08 | The APP SHALL attach header `X-Store-Id: <childStoreId>` on every request when the active context ≠ parent. | KD-APP C#2 |
 | APP-FR-09 | The APP SHALL provide a UI selector listing child stores fetched from `GET /v1/stores?parentId=<me>` and persist the last choice in volatile memory. | L1-FRS-§2.2.4 |
 
-#### 2.4 Customer Verification OTP  
+
+### 2.4 Customer Verification OTP  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-10 | When required by promotion rules, the APP SHALL issue `POST /v1/customer-otp/request` supporting both SMS and Email channels via MSG91 and display an OTP input dialog. | L1-FRS-§2.1.2 |
 | APP-FR-11 | On successful verify (`POST /v1/customer-otp/verify`) the APP SHALL cache the returned `eligibilityToken` in RAM for the current cart session only. | L1-FRS-§2.1.2 |
 | APP-FR-12 | The APP SHALL enforce customer OTP policies: 6 digits, 5-minute TTL, max 3 attempts before lockout, max 3 resends per 15 minutes with 60s cooldown. | L1-FRS-§2.1.2 | TTL and lockout enforced by backend |
 
-#### 2.5 Product Catalogue Browsing & Search  
+
+### 2.5 Product Catalogue Browsing & Search  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-13 | The APP SHALL list products via paginated `GET /v1/products?page=<n>&pageSize=50` with infinite scroll. | L1-FRS-§2.3.1 ; KD-APP C#3 |
 | APP-FR-14 | The APP SHALL support text search (`?search=<term>`). No barcode or QR scanning is required in v1. | Clarification #1 |
 | APP-FR-15 | The APP SHALL debounce search queries (≥ 300 ms) and cancel in-flight requests when the term changes. | NFR (TBD) |
 
-#### 2.6 Cart & Promotion Evaluation  
+
+### 2.6 Cart & Promotion Evaluation  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-16 | The APP SHALL allow users to add any quantity and number of line items; client-side limits are **not** enforced. | Clarification #2 |
 | APP-FR-17 | On user command **Check Promotions** the APP SHALL call `POST /v1/promotions/evaluate` with `{cart, storeId}` and render the ordered eligible list. | L1-FRS-§2.5.4 |
 | APP-FR-18 | If the user makes no explicit choice, the APP SHALL apply the first promotion in the returned list in accordance with backend auto-apply behaviour. | L1-FRS-§2.5.4 |
 
-#### 2.7 Transaction Submission  
+
+### 2.7 Transaction Submission  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-19 | The APP SHALL POST the cart using `POST /v1/transactions` with `promotionId`, `eligibilityToken` (optional), and a UUID in `Idempotency-Key` header. | L2-LLD-IC #22 ; KD-APP C#4 |
 | APP-FR-20 | On `202 Accepted` the APP SHALL retain the `Idempotency-Key` in RAM and retry on failure until a terminal 201/4xx is received. | KD-APP C#4 |
 | APP-FR-21 | The APP SHALL display success screen containing `transactionId`. | L1-FRS-§2.6.1 |
 
-#### 2.8 Transaction Reconciliation  
+
+### 2.8 Transaction Reconciliation  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-22 | While status = NEW or UNDER_REVIEW, the APP SHALL provide an **Add / Edit Reconciliation** screen capturing `invoiceNo`, `pidNo`, and one attachment. | Clarification #10 ; L1-FRS-§2.6.2 |
@@ -65,25 +72,29 @@ Each requirement is tagged with an internal identifier `APP-FR-xx` and, where ap
 | APP-FR-25 | Once the backend returns status VERIFIED or later, the reconciliation UI MUST switch to read-only mode. | L1-FRS-§2.6.3 |
 | APP-FR-26 | The APP SHALL enforce reconciliation uniqueness validation: display error if (store_id, invoice_no) or (store_id, pid_no) combination already exists when returned by backend. | L1-FRS-§2.6.2 | Uniqueness enforced by backend |
 
-#### 2.9 KPI Dashboard  
+
+### 2.9 KPI Dashboard  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-27 | The Home tab SHALL display numeric KPI tiles: store count, last 7 days tx, last 30 days tx, average tx/store, promotion uptake, avg ticket size, promotion-wise retailer count. | L1-FRS-§2.7 ; Clarification #4 |
 | APP-FR-28 | KPIs SHALL be fetched via `GET /v1/reports/performance?range=last7d` etc. on screen entry and on pull-to-refresh. | L2-LLD-IC #30 |
 
-#### 2.10 Role-Based UI Gating  
+
+### 2.10 Role-Based UI Gating  
 | ID | Requirement | Trace |
 |----|-------------|-------|
 | APP-FR-29 | The APP SHALL ship as a single binary; features are enabled or hidden at runtime based on role claims in the JWT (`role` = S, P). KAM and Admin users are not supported in the mobile app. | Clarification #5 |
 | APP-FR-30 | Parent-Store-only features: child-store selector, child-store user creation link-out to WEBPRT. | L1-FRS-§2.2.4 |
 
-#### 2.11 Version Enforcement  
+
+### 2.11 Version Enforcement  
 | ID | Requirement | HTTP | Trace |
 |----|-------------|------|-------|
 | APP-FR-31 | The APP SHALL send header `X-App-Version: <semanticVersion>` on every API call. | Clarification #9 |
 | APP-FR-32 | On HTTP 426 with header `X-Min-Version`, the APP MUST show a blocking dialog and deep-link to the relevant app-store page. | Clarification #9 |
 
-#### 2.12 Error Handling & Notifications  
+
+### 2.12 Error Handling & Notifications  
 | ID | Requirement | Trace |
 |----|-------------|-------|
 | APP-FR-33 | The APP SHALL parse the canonical error envelope (`error.code`, `message`, `details`) and map known codes to localized user messages; unknown codes fall back to generic toast. | L2-LLD-IC §6 ; KD-APP L2-IC-2 |
@@ -91,7 +102,8 @@ Each requirement is tagged with an internal identifier `APP-FR-xx` and, where ap
 | APP-FR-35 | The APP SHALL use TLS 1.2 for all HTTPS connections to backend and Azure services. | L1-HLD-§8 | Security requirement |
 | APP-FR-36 | The APP SHALL NOT implement any push notification functionality (no FCM/APNS integration). | L1-KD | All notifications via SMS/Email only |
 
-#### 2.13 Internationalisation & Accessibility  
+
+### 2.13 Internationalisation & Accessibility  
 | ID | Requirement | Trace |
 |----|-------------|-------|
 | APP-FR-37 | All static strings MAY be hard-coded English; no runtime localisation scaffold is required in v1. | Clarification #6 |

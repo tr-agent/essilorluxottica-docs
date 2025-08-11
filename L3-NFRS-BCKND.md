@@ -23,10 +23,10 @@ No contractual SLOs. The following are internal guidelines for a single Azure Ap
 
 ### 3. Scalability  
 
-• Single instance only - scale vertically by upgrading Azure SKU if needed
-• No horizontal scaling, read replicas, or sharding
-• Cache limited to 20 active promotions
-• Background jobs use PostgreSQL advisory locks to prevent conflicts
+- Single instance only - scale vertically by upgrading Azure SKU if needed
+- No horizontal scaling, read replicas, or sharding
+- Cache limited to 20 active promotions
+- Background jobs use PostgreSQL advisory locks to prevent conflicts
 ---
 
 ### 4. Security Requirements  
@@ -63,11 +63,11 @@ No formal SLA or monthly uptime objective is imposed; the client explicitly acce
 
 ### 6. Maintainability  
 
-• Modular monolith architecture
-• GitHub Actions CI/CD with automated tests
-• Logging to Azure Application Insights (90-day retention)
-• Health endpoints: `/healthz` and `/readyz`
-• Basic alerting via Application Insights
+- Modular monolith architecture
+- GitHub Actions CI/CD with automated tests
+- Logging to Azure Application Insights (90-day retention)
+- Health endpoints: `/healthz` and `/readyz`
+- Basic alerting via Application Insights
 ---
 
 ### 7. API Standards  
@@ -104,12 +104,12 @@ This section locks the runtime environment so that performance, security and cos
 
 ### 10. Key Dependencies  
 
-• Azure App Service (Basic B2) - Linux container hosting
-• Azure PostgreSQL Flexible Server - Data storage
-• Azure Blob Storage - Files and audit logs
-• Azure Storage Queue - Async messaging
-• MSG91 - SMS & Email delivery
-• All dependencies detailed in L1/L2 documents
+- Azure App Service (Basic B2) - Linux container hosting
+- Azure PostgreSQL Flexible Server - Data storage
+- Azure Blob Storage - Files and audit logs
+- Azure Storage Queue - Async messaging
+- MSG91 - SMS & Email delivery
+- All dependencies detailed in L1/L2 documents
 ---
 
 _End of Document_

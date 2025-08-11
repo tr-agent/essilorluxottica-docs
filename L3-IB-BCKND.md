@@ -208,4 +208,3 @@ Any modification to backlog items requires:
 ---
 
 _End of file_
-```
