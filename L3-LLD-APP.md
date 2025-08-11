@@ -271,7 +271,7 @@ UI          Cubit/Bloc    DioClient    API         SecureStore
 ```
 ```
 
-Token storage key  
+Token storage keys  
 
 | Key              | Store                    | Lifetime |
 |------------------|--------------------------|----------|
