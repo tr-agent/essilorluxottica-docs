@@ -277,9 +277,8 @@ Token storage keys
 |------------------|--------------------------|----------|
 | `refreshToken`   | Secure Storage           | 12 h     |
 | `jwt`            | Secure Storage           | ≤60 min  |
-
-
-
+```
+```
 #### 2.5 Token-Based Pagination Helper
 All GET list calls accept `/v1/*?limit=N&nextToken=…`. `ListResponse<T>` model exposes `items` & `nextToken`. Blocs/Cubits keep last `nextToken` per list and emit `Fetching`, `Success`, `EndOfList`.
 
