@@ -11,8 +11,8 @@ This Level‑1 *Screen‑Inventory* enumerates **every** screen, modal and major
 
 ### 2.1 Web Portal (**WEBPRT**) – Admin & KAM (KAM has read-only access to Dashboard, Transaction management, User Management, Lenses List, Frames List, Stores List, and Promotion List screens only)
 
-| Platform   | Screen / Modal                           | Primary Roles                                             | Key Features / Purpose                                                           | Critical Data Elements                             | **Dependencies**
-| --- | --- | --- | --- | --- | --- | --- |                                                                                                                         | Integration Points                         
+| Platform   | Screen / Modal                           | Primary Roles                                             | Key Features / Purpose                                                           | Critical Data Elements                             | **Dependencies**                                                                                                              | Integration Points                         
+| --- | --- | --- | --- | --- | --- | --- |
 | Web Portal | **Login (OTP)**                          | Admin (E-mail), KAM (E-mail)                              | OTP entry, resend & verification (Email/SMS)                                       | email/phone, otp_code                                   | `POST /v1/auth/otp/request`, `POST /v1/auth/otp/resend`, `POST /v1/auth/otp/verify` &nbsp;•&nbsp; channel = Email/SMS | MSG91-Email/SMS                                         |
 | Web Portal | **Dashboard**                            | Admin, KAM (scoped)                                       | KPI tiles & trends                                                               | store_count, trx_stats, promo_stats              | `GET /v1/stores/stats`, `GET /v1/transactions/stats`, `GET /v1/promotions/stats` &nbsp;•&nbsp; role-scoped cache (KAM: GET only)    | —                                                   |
 | Web Portal | **Lenses List**                          | Admin, KAM (scoped, RO)                                                     | CRUD (Admin), View only (KAM), CSV upload (Admin), deactivate                                                     | lens attrs (~18)                                  | `GET /v1/lenses` (Admin/KAM), `POST /v1/lenses`, `PUT /v1/lenses/{id}`, `DELETE /v1/lenses/{id}`, `POST /v1/csv-jobs/lenses/presign`, `POST /v1/csv-jobs/lenses` (Admin only) | Azure Blob                                          |
@@ -43,7 +43,7 @@ This Level‑1 *Screen‑Inventory* enumerates **every** screen, modal and major
 ### 2.2 Mobile App (**APP**) – Store & Parent-Store
 
 | Platform | Screen / Modal                       | Primary Roles              | Key Features / Purpose                                           | Critical Data Elements                | **Dependencies**                                                                                                              | Integration Points
-| --- | --- | --- | --- | --- | --- | --- |          |
+| --- | --- | --- | --- | --- | --- | --- |
 | Mobile App | **Login (OTP)**                    | Store, Parent              | SMS/Email OTP login (resend, 5 attempt limit)                          | phone/email, otp_code                       | `POST /v1/auth/otp/request`, `POST /v1/auth/otp/resend`, `POST /v1/auth/otp/verify` &nbsp;•&nbsp; SMS/Email channel | MSG91-SMS/Email                     |
 | Mobile App | **Home Feed**                      | Store, Parent              | Scroll active promos                                             | promo_cards                           | `GET /v1/promotions/active`                                                                                                   | —                             |
 | Mobile App | **Offers Tab**                     | Store, Parent              | Alternate promo filter UI                                        | promo_cards                           | `GET /v1/promotions/active`                                                                                                   | —                             |
@@ -63,8 +63,6 @@ This Level‑1 *Screen‑Inventory* enumerates **every** screen, modal and major
 | Mobile App | **Manage Users**                   | Parent                     | Create, view, edit store users                                 | name, phone, email, role, status      | `GET /v1/users?store=<child>`, `POST /v1/users`, `PUT /v1/users/{id}`, `PATCH /v1/users/{id}`                                  | —                             |
 | Mobile App | **Transaction Detail**            | Store, Parent              | View full transaction (read-only)                                | trx_id, products, amounts             | `GET /v1/transactions/{id}`                                                                                                     | —                             |
 | Mobile App | **Profile**                       | Store, Parent              | View profile, logout                                             | name, store_ids                       | `GET /v1/users/me`, `POST /v1/auth/logout`                                                                                      | —                             |
-
----
 
 ---
 
