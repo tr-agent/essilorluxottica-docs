@@ -1,4 +1,3 @@
-```markdown
 ## L1-RAD: Risk Assessment Document (RAD)  Document
 
 ### 1. Purpose & Scope
@@ -76,4 +75,3 @@ The Solution Architect will revisit this RAD at the end of L2 design or upon any
 
 ---
 _End of Document_
-```

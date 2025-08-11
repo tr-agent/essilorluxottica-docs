@@ -222,4 +222,3 @@ The concrete implementation details live in component-level L3 documents; the bu
 ---
 
 _End of document_
-```
